@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BuildSmart — Next-Gen Hardware Store Management</title>
+  <meta name="description" content="BuildSmart is a next-generation construction supply management platform featuring AI-powered inventory forecasting, smart warehouse analytics, bulk order management, and real-time delivery tracking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ===== SIDEBAR NAV ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect x="2" y="14" width="10" height="12" rx="2" fill="url(#g1)"/>
+        <rect x="16" y="8" width="10" height="18" rx="2" fill="url(#g2)"/>
+        <rect x="2" y="2" width="10" height="8" rx="2" fill="url(#g3)"/>
+        <defs>
+          <linearGradient id="g1" x1="2" y1="14" x2="12" y2="26" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C8A96E"/>
+            <stop offset="1" stop-color="#8B6914"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="16" y1="8" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#E8C97E"/>
+            <stop offset="1" stop-color="#C8A96E"/>
+          </linearGradient>
+          <linearGradient id="g3" x1="2" y1="2" x2="12" y2="10" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F0D898"/>
+            <stop offset="1" stop-color="#C8A96E"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">Build<span class="brand-accent">Smart</span></span>
+      <span class="brand-tagline">Pro Edition</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+      <i class="nav-icon">⊞</i><span>Dashboard</span>
+      <div class="nav-indicator"></div>
+    </a>
+    <a class="nav-item" data-page="analytics" onclick="navigate('analytics')">
+      <i class="nav-icon">◈</i><span>Analytics</span>
+    </a>
+
+    <div class="nav-section-label">Operations</div>
+    <a class="nav-item" data-page="inventory" onclick="navigate('inventory')">
+      <i class="nav-icon">▦</i><span>Inventory</span>
+      <span class="nav-badge">24</span>
+    </a>
+    <a class="nav-item" data-page="orders" onclick="navigate('orders')">
+      <i class="nav-icon">◉</i><span>Bulk Orders</span>
+    </a>
+    <a class="nav-item" data-page="suppliers" onclick="navigate('suppliers')">
+      <i class="nav-icon">◎</i><span>Suppliers</span>
+    </a>
+    <a class="nav-item" data-page="warehouse" onclick="navigate('warehouse')">
+      <i class="nav-icon">⬡</i><span>Warehouse</span>
+    </a>
+
+    <div class="nav-section-label">Intelligence</div>
+    <a class="nav-item" data-page="ai-forecast" onclick="navigate('ai-forecast')">
+      <i class="nav-icon">✦</i><span>AI Forecast</span>
+      <span class="nav-badge ai">AI</span>
+    </a>
+    <a class="nav-item" data-page="demand" onclick="navigate('demand')">
+      <i class="nav-icon">◬</i><span>Demand AI</span>
+      <span class="nav-badge ai">AI</span>
+    </a>
+
+    <div class="nav-section-label">Commerce</div>
+    <a class="nav-item" data-page="billing" onclick="navigate('billing')">
+      <i class="nav-icon">◈</i><span>QR Billing</span>
+    </a>
+    <a class="nav-item" data-page="invoices" onclick="navigate('invoices')">
+      <i class="nav-icon">◻</i><span>Invoices</span>
+    </a>
+    <a class="nav-item" data-page="delivery" onclick="navigate('delivery')">
+      <i class="nav-icon">⬖</i><span>Delivery</span>
+    </a>
+
+    <div class="nav-section-label">Accounts</div>
+    <a class="nav-item" data-page="contractors" onclick="navigate('contractors')">
+      <i class="nav-icon">◈</i><span>Contractors</span>
+    </a>
+    <a class="nav-item" data-page="products" onclick="navigate('products')">
+      <i class="nav-icon">⬡</i><span>Products</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">JD</div>
+      <div class="user-info">
+        <span class="user-name">James Dawson</span>
+        <span class="user-role">Admin</span>
+      </div>
+      <div class="user-status online"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MOBILE NAV TOGGLE ===== -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content" id="mainContent">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="page-breadcrumb" id="pageBreadcrumb">Dashboard</div>
+      <div class="topbar-search">
+        <span class="search-icon">⊕</span>
+        <input type="text" id="globalSearch" placeholder="Search products, orders, suppliers…" oninput="handleSearch(this.value)" />
+        <kbd class="search-shortcut">⌘K</kbd>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="showAlerts()">
+        <span>🔔</span>
+        <span class="btn-badge">5</span>
+      </button>
+      <button class="topbar-btn" onclick="showReorderAlerts()">
+        <span>⚠</span>
+        <span class="btn-badge warn">3</span>
+      </button>
+      <div class="topbar-date">
+        <span id="currentTime">--:--</span>
+        <span class="date-sub" id="currentDate">Loading…</span>
+      </div>
+      <div class="topbar-profile">
+        <div class="profile-avatar">JD</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== PAGES ========== -->
+
+  <!-- DASHBOARD PAGE -->
+  <section class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Command Center</h1>
+        <p class="page-subtitle">Real-time overview of your construction supply ecosystem</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="exportReport()">↓ Export Report</button>
+        <button class="btn-primary" onclick="navigate('orders')">+ New Order</button>
+      </div>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--accent:#C8A96E">
+        <div class="kpi-icon" style="background:linear-gradient(135deg,#C8A96E22,#C8A96E44)">💰</div>
+        <div class="kpi-data">
+          <div class="kpi-value" id="kpiRevenue">₹0</div>
+          <div class="kpi-label">Today's Revenue</div>
+          <div class="kpi-delta positive">↑ 12.4% vs yesterday</div>
+        </div>
+        <div class="kpi-sparkline">
+          <canvas id="sparkRevenue" width="80" height="32"></canvas>
+        </div>
+      </div>
+      <div class="kpi-card" style="--accent:#4A90D9">
+        <div class="kpi-icon" style="background:linear-gradient(135deg,#4A90D922,#4A90D944)">📦</div>
+        <div class="kpi-data">
+          <div class="kpi-value" id="kpiOrders">0</div>
+          <div class="kpi-label">Active Orders</div>
+          <div class="kpi-delta positive">↑ 8 new today</div>
+        </div>
+        <div class="kpi-sparkline">
+          <canvas id="sparkOrders" width="80" height="32"></canvas>
+        </div>
+      </div>
+      <div class="kpi-card" style="--accent:#52C97E">
+        <div class="kpi-icon" style="background:linear-gradient(135deg,#52C97E22,#52C97E44)">🏗</div>
+        <div class="kpi-data">
+          <div class="kpi-value" id="kpiInventory">0</div>
+          <div class="kpi-label">SKUs In Stock</div>
+          <div class="kpi-delta negative">↓ 3 low stock</div>
+        </div>
+        <div class="kpi-sparkline">
+          <canvas id="sparkInventory" width="80" height="32"></canvas>
+        </div>
+      </div>
+      <div class="kpi-card" style="--accent:#E87E52">
+        <div class="kpi-icon" style="background:linear-gradient(135deg,#E87E5222,#E87E5244)">🚚</div>
+        <div class="kpi-data">
+          <div class="kpi-value" id="kpiDeliveries">0</div>
+          <div class="kpi-label">Active Deliveries</div>
+          <div class="kpi-delta positive">↑ On schedule</div>
+        </div>
+        <div class="kpi-sparkline">
+          <canvas id="sparkDelivery" width="80" height="32"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN DASHBOARD GRID -->
+    <div class="dashboard-grid">
+
+      <!-- REVENUE CHART -->
+      <div class="dash-card large">
+        <div class="card-header">
+          <h3 class="card-title">Revenue Overview</h3>
+          <div class="card-controls">
+            <button class="ctrl-btn active" onclick="setChartPeriod('week',this)">7D</button>
+            <button class="ctrl-btn" onclick="setChartPeriod('month',this)">30D</button>
+            <button class="ctrl-btn" onclick="setChartPeriod('quarter',this)">90D</button>
+          </div>
+        </div>
+        <canvas id="revenueChart" height="200"></canvas>
+      </div>
+
+      <!-- TOP CATEGORIES -->
+      <div class="dash-card medium">
+        <div class="card-header">
+          <h3 class="card-title">Category Sales</h3>
+        </div>
+        <canvas id="categoryChart" height="220"></canvas>
+      </div>
+
+      <!-- SMART ALERTS -->
+      <div class="dash-card medium">
+        <div class="card-header">
+          <h3 class="card-title">Smart Alerts</h3>
+          <span class="badge-count">5</span>
+        </div>
+        <div class="alerts-list" id="alertsList"></div>
+      </div>
+
+      <!-- RECENT ORDERS -->
+      <div class="dash-card large">
+        <div class="card-header">
+          <h3 class="card-title">Recent Orders</h3>
+          <a onclick="navigate('orders')" class="card-link">View all →</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="recentOrdersTable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AI FORECAST WIDGET -->
+      <div class="dash-card medium ai-card">
+        <div class="ai-glow"></div>
+        <div class="card-header">
+          <h3 class="card-title">✦ AI Stock Forecast</h3>
+          <span class="ai-tag">Live</span>
+        </div>
+        <div class="forecast-items" id="forecastWidget"></div>
+      </div>
+
+      <!-- WAREHOUSE HEATMAP PREVIEW -->
+      <div class="dash-card medium">
+        <div class="card-header">
+          <h3 class="card-title">Warehouse Heat Map</h3>
+          <a onclick="navigate('warehouse')" class="card-link">Full view →</a>
+        </div>
+        <div class="heatmap-mini" id="heatmapMini"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ANALYTICS PAGE -->
+  <section class="page" id="page-analytics">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Analytics Dashboard</h1>
+        <p class="page-subtitle">Deep insights into your business performance</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="exportReport()">↓ Download PDF</button>
+      </div>
+    </div>
+
+    <div class="analytics-grid">
+      <div class="dash-card xl">
+        <div class="card-header">
+          <h3 class="card-title">Monthly Revenue Trend</h3>
+          <div class="card-controls">
+            <button class="ctrl-btn active">2026</button>
+          </div>
+        </div>
+        <canvas id="analyticsRevChart" height="250"></canvas>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Top Products</h3></div>
+        <div id="topProductsList" class="product-rank-list"></div>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Supplier Performance</h3></div>
+        <canvas id="supplierChart" height="220"></canvas>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Order Fulfillment Rate</h3></div>
+        <canvas id="fulfillmentChart" height="220"></canvas>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Contractor Activity</h3></div>
+        <canvas id="contractorChart" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVENTORY PAGE -->
+  <section class="page" id="page-inventory">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Inventory Management</h1>
+        <p class="page-subtitle">Track, manage and optimize your stock levels</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="scanQR()">⊕ Scan QR</button>
+        <button class="btn-primary" onclick="addInventoryItem()">+ Add Item</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-search">
+        <input type="text" placeholder="Search inventory…" id="inventorySearch" oninput="filterInventory(this.value)" />
+      </div>
+      <div class="filter-chips">
+        <button class="chip active" onclick="filterByCategory('all',this)">All</button>
+        <button class="chip" onclick="filterByCategory('cement',this)">Cement</button>
+        <button class="chip" onclick="filterByCategory('steel',this)">Steel</button>
+        <button class="chip" onclick="filterByCategory('tools',this)">Tools</button>
+        <button class="chip" onclick="filterByCategory('electrical',this)">Electrical</button>
+        <button class="chip" onclick="filterByCategory('plumbing',this)">Plumbing</button>
+        <button class="chip" onclick="filterByCategory('paint',this)">Paint</button>
+      </div>
+      <div class="filter-right">
+        <select class="select-input" onchange="sortInventory(this.value)">
+          <option value="name">Sort by Name</option>
+          <option value="stock">Sort by Stock</option>
+          <option value="price">Sort by Price</option>
+          <option value="reorder">Reorder Needed</option>
+        </select>
+        <button class="btn-icon" onclick="toggleView('grid')" id="gridViewBtn">▦</button>
+        <button class="btn-icon" onclick="toggleView('list')" id="listViewBtn">☰</button>
+      </div>
+    </div>
+
+    <div class="inventory-grid" id="inventoryGrid"></div>
+
+    <!-- ADD ITEM MODAL -->
+    <div class="modal-overlay" id="addItemModal" style="display:none">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Add Inventory Item</h3>
+          <button class="modal-close" onclick="closeModal('addItemModal')">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Product Name</label>
+              <input type="text" id="newItemName" placeholder="e.g. Portland Cement 50kg" />
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="newItemCategory">
+                <option value="cement">Cement</option>
+                <option value="steel">Steel</option>
+                <option value="tools">Tools</option>
+                <option value="electrical">Electrical</option>
+                <option value="plumbing">Plumbing</option>
+                <option value="paint">Paint</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Stock Quantity</label>
+              <input type="number" id="newItemStock" placeholder="0" />
+            </div>
+            <div class="form-group">
+              <label>Unit Price (₹)</label>
+              <input type="number" id="newItemPrice" placeholder="0.00" />
+            </div>
+            <div class="form-group">
+              <label>Reorder Level</label>
+              <input type="number" id="newItemReorder" placeholder="10" />
+            </div>
+            <div class="form-group">
+              <label>Supplier</label>
+              <select id="newItemSupplier">
+                <option>BuildMart Pro</option>
+                <option>SteelForge Co.</option>
+                <option>PowerTool Inc.</option>
+                <option>ElectroPro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeModal('addItemModal')">Cancel</button>
+          <button class="btn-primary" onclick="saveInventoryItem()">Save Item</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDERS PAGE -->
+  <section class="page" id="page-orders">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Bulk Order Management</h1>
+        <p class="page-subtitle">Manage and track all procurement orders</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-primary" onclick="createOrder()">+ Create Order</button>
+      </div>
+    </div>
+
+    <div class="orders-stats">
+      <div class="stat-pill">
+        <span class="stat-dot pending"></span>Pending <strong id="statPending">0</strong>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-dot processing"></span>Processing <strong id="statProcessing">0</strong>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-dot shipped"></span>Shipped <strong id="statShipped">0</strong>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-dot delivered"></span>Delivered <strong id="statDelivered">0</strong>
+      </div>
+    </div>
+
+    <div class="table-wrap elevated">
+      <table class="data-table" id="ordersTable">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Supplier</th>
+            <th>Items</th>
+            <th>Total Value</th>
+            <th>Order Date</th>
+            <th>Expected</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- CREATE ORDER MODAL -->
+    <div class="modal-overlay" id="createOrderModal" style="display:none">
+      <div class="modal large">
+        <div class="modal-header">
+          <h3>Create Bulk Order</h3>
+          <button class="modal-close" onclick="closeModal('createOrderModal')">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Supplier</label>
+              <select id="orderSupplier">
+                <option>BuildMart Pro</option>
+                <option>SteelForge Co.</option>
+                <option>PowerTool Inc.</option>
+                <option>ElectroPro</option>
+                <option>PlumbEx</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Delivery Date</label>
+              <input type="date" id="orderDeliveryDate" />
+            </div>
+            <div class="form-group full">
+              <label>Order Notes</label>
+              <textarea id="orderNotes" rows="2" placeholder="Special instructions…"></textarea>
+            </div>
+          </div>
+          <div class="order-items-builder">
+            <div class="oib-header">
+              <h4>Order Items</h4>
+              <button class="btn-sm" onclick="addOrderLine()">+ Add Line</button>
+            </div>
+            <div id="orderLines">
+              <div class="order-line">
+                <select class="ol-product">
+                  <option>Portland Cement 50kg</option>
+                  <option>TMT Steel Bar 12mm</option>
+                  <option>Power Drill HD</option>
+                  <option>PVC Pipe 4inch</option>
+                </select>
+                <input type="number" class="ol-qty" placeholder="Qty" value="100" />
+                <input type="number" class="ol-price" placeholder="Unit Price" value="420" />
+                <span class="ol-total">₹42,000</span>
+                <button class="ol-remove" onclick="removeOrderLine(this)">✕</button>
+              </div>
+            </div>
+            <div class="order-total-bar">
+              <span>Total:</span>
+              <strong id="orderTotalDisplay">₹42,000</strong>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeModal('createOrderModal')">Cancel</button>
+          <button class="btn-primary" onclick="submitOrder()">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPLIERS PAGE -->
+  <section class="page" id="page-suppliers">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Supplier Management</h1>
+        <p class="page-subtitle">Manage your supplier network and performance</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-primary" onclick="addSupplier()">+ Add Supplier</button>
+      </div>
+    </div>
+
+    <div class="suppliers-grid" id="suppliersGrid"></div>
+  </section>
+
+  <!-- WAREHOUSE PAGE -->
+  <section class="page" id="page-warehouse">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Smart Warehouse</h1>
+        <p class="page-subtitle">Real-time warehouse analytics and floor map</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="refreshWarehouse()">↺ Refresh</button>
+      </div>
+    </div>
+
+    <div class="warehouse-kpis">
+      <div class="w-kpi"><div class="w-kpi-val">87%</div><div class="w-kpi-label">Space Utilization</div></div>
+      <div class="w-kpi"><div class="w-kpi-val">1,248</div><div class="w-kpi-label">Active SKUs</div></div>
+      <div class="w-kpi"><div class="w-kpi-val">34</div><div class="w-kpi-label">Zones</div></div>
+      <div class="w-kpi"><div class="w-kpi-val">99.2%</div><div class="w-kpi-label">Accuracy</div></div>
+    </div>
+
+    <div class="warehouse-layout">
+      <div class="dash-card">
+        <div class="card-header">
+          <h3 class="card-title">Floor Heatmap</h3>
+          <div class="heatmap-legend">
+            <span class="hm-low">Low</span>
+            <div class="hm-scale"></div>
+            <span class="hm-high">High</span>
+          </div>
+        </div>
+        <div class="heatmap-grid" id="fullHeatmap"></div>
+      </div>
+
+      <div class="warehouse-sidebar-panel">
+        <div class="dash-card">
+          <div class="card-header"><h3 class="card-title">Zone Details</h3></div>
+          <div id="zoneDetails" class="zone-list"></div>
+        </div>
+        <div class="dash-card">
+          <div class="card-header"><h3 class="card-title">Storage Trend</h3></div>
+          <canvas id="storageTrendChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI FORECAST PAGE -->
+  <section class="page" id="page-ai-forecast">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">✦ AI Stock Forecasting</h1>
+        <p class="page-subtitle">Machine learning predictions for optimal stock management</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-primary ai-btn" onclick="runForecast()">▶ Run Forecast</button>
+      </div>
+    </div>
+
+    <div class="ai-page-grid">
+      <div class="dash-card ai-card xl">
+        <div class="ai-glow"></div>
+        <div class="card-header">
+          <h3 class="card-title">Stock Demand Forecast — Next 30 Days</h3>
+          <span class="ai-tag">AI Powered</span>
+        </div>
+        <canvas id="forecastChart" height="280"></canvas>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Predicted Stockouts</h3></div>
+        <div id="stockoutList" class="stockout-list"></div>
+      </div>
+
+      <div class="dash-card medium ai-card">
+        <div class="ai-glow small"></div>
+        <div class="card-header">
+          <h3 class="card-title">Reorder Recommendations</h3>
+          <span class="ai-tag">Smart</span>
+        </div>
+        <div id="reorderList" class="reorder-list"></div>
+      </div>
+
+      <div class="dash-card xl">
+        <div class="card-header"><h3 class="card-title">Category Demand Matrix</h3></div>
+        <canvas id="demandMatrix" height="250"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMAND PAGE -->
+  <section class="page" id="page-demand">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">◬ AI Demand Prediction</h1>
+        <p class="page-subtitle">Seasonal and trend-based demand intelligence</p>
+      </div>
+    </div>
+
+    <div class="demand-grid">
+      <div class="dash-card xl">
+        <div class="card-header">
+          <h3 class="card-title">Seasonal Demand Patterns</h3>
+        </div>
+        <canvas id="seasonalChart" height="260"></canvas>
+      </div>
+
+      <div class="dash-card medium ai-card">
+        <div class="ai-glow"></div>
+        <div class="card-header"><h3 class="card-title">AI Insights</h3></div>
+        <div id="aiInsights" class="ai-insights-list"></div>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Demand by Region</h3></div>
+        <canvas id="regionChart" height="220"></canvas>
+      </div>
+
+      <div class="dash-card medium">
+        <div class="card-header"><h3 class="card-title">Price Sensitivity</h3></div>
+        <canvas id="priceChart" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- QR BILLING PAGE -->
+  <section class="page" id="page-billing">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">QR Billing System</h1>
+        <p class="page-subtitle">Fast, contactless billing with QR code scanning</p>
+      </div>
+    </div>
+
+    <div class="billing-layout">
+      <div class="billing-left">
+        <div class="dash-card">
+          <div class="card-header"><h3 class="card-title">New Bill</h3></div>
+          <div class="billing-form">
+            <div class="form-group">
+              <label>Customer Name / Contractor</label>
+              <input type="text" id="billCustomer" placeholder="Search customer…" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="billPhone" placeholder="+91 XXXXX XXXXX" />
+            </div>
+
+            <div class="bill-items" id="billItemsList">
+              <div class="bill-item-row">
+                <div class="bir-scan">
+                  <button class="qr-scan-btn" onclick="simulateScan(this)">📷 Scan</button>
+                </div>
+                <input class="bir-product" type="text" placeholder="Product name or SKU" />
+                <input class="bir-qty" type="number" placeholder="Qty" value="1" />
+                <input class="bir-price" type="number" placeholder="Price" />
+                <span class="bir-total">₹0</span>
+                <button class="bir-del" onclick="removeBillRow(this)">✕</button>
+              </div>
+            </div>
+
+            <button class="btn-sm add-row-btn" onclick="addBillRow()">+ Add Item</button>
+
+            <div class="bill-summary">
+              <div class="bs-row"><span>Subtotal</span><span id="billSubtotal">₹0</span></div>
+              <div class="bs-row"><span>GST (18%)</span><span id="billGST">₹0</span></div>
+              <div class="bs-row total"><span>Total</span><strong id="billTotal">₹0</strong></div>
+            </div>
+
+            <div class="bill-actions">
+              <button class="btn-secondary" onclick="generateInvoice()">📄 Invoice</button>
+              <button class="btn-primary" onclick="processBill()">✓ Process Bill</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="billing-right">
+        <div class="dash-card qr-card">
+          <div class="card-header"><h3 class="card-title">Payment QR Code</h3></div>
+          <div class="qr-display" id="qrDisplay">
+            <div class="qr-placeholder">
+              <div class="qr-pattern" id="qrPattern"></div>
+              <p class="qr-amount" id="qrAmount">₹0.00</p>
+              <p class="qr-sub">Scan to pay via UPI</p>
+            </div>
+          </div>
+          <div class="payment-methods">
+            <span class="pm-badge">UPI</span>
+            <span class="pm-badge">GPay</span>
+            <span class="pm-badge">PhonePe</span>
+            <span class="pm-badge">Paytm</span>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="card-header"><h3 class="card-title">Recent Bills</h3></div>
+          <div id="recentBills" class="recent-bills-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVOICES PAGE -->
+  <section class="page" id="page-invoices">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Invoice Management</h1>
+        <p class="page-subtitle">Generate, manage and track all invoices</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-primary" onclick="generateInvoice()">+ Generate Invoice</button>
+      </div>
+    </div>
+
+    <div class="table-wrap elevated">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoicesBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DELIVERY PAGE -->
+  <section class="page" id="page-delivery">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Delivery Tracking</h1>
+        <p class="page-subtitle">Real-time monitoring of all active shipments</p>
+      </div>
+    </div>
+
+    <div class="delivery-grid">
+      <div class="delivery-map-card dash-card">
+        <div class="card-header">
+          <h3 class="card-title">Live Delivery Map</h3>
+          <span class="live-badge">● LIVE</span>
+        </div>
+        <div class="map-placeholder" id="deliveryMap">
+          <div class="map-bg">
+            <div class="map-grid-lines"></div>
+            <div id="mapDeliveries"></div>
+          </div>
+          <div class="map-legend">
+            <span><span class="map-dot green"></span>On Time</span>
+            <span><span class="map-dot orange"></span>Delayed</span>
+            <span><span class="map-dot red"></span>Alert</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="delivery-list-panel">
+        <div class="dash-card">
+          <div class="card-header"><h3 class="card-title">Active Shipments</h3></div>
+          <div id="deliveryList" class="delivery-items"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTRACTORS PAGE -->
+  <section class="page" id="page-contractors">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Contractor Accounts</h1>
+        <p class="page-subtitle">Manage your registered contractor network</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-primary" onclick="addContractor()">+ Add Contractor</button>
+      </div>
+    </div>
+
+    <div class="contractors-grid" id="contractorsGrid"></div>
+  </section>
+
+  <!-- PRODUCTS PAGE -->
+  <section class="page" id="page-products">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Product Showcase</h1>
+        <p class="page-subtitle">Browse our complete construction supply catalog</p>
+      </div>
+    </div>
+
+    <div class="product-search-bar">
+      <div class="psb-input-wrap">
+        <span class="psb-icon">⊕</span>
+        <input type="text" id="productSearchInput" placeholder="Search by name, SKU, category, brand…" oninput="searchProducts(this.value)" />
+        <button class="psb-filter-btn" onclick="toggleProductFilters()">⚙ Filters</button>
+      </div>
+      <div class="product-filters" id="productFilters" style="display:none">
+        <div class="pf-row">
+          <div class="form-group">
+            <label>Min Price</label>
+            <input type="number" id="pfMinPrice" placeholder="₹0" />
+          </div>
+          <div class="form-group">
+            <label>Max Price</label>
+            <input type="number" id="pfMaxPrice" placeholder="₹999999" />
+          </div>
+          <div class="form-group">
+            <label>Brand</label>
+            <select id="pfBrand">
+              <option value="">All Brands</option>
+              <option>UltraTech</option>
+              <option>TATA Steel</option>
+              <option>Bosch</option>
+              <option>Havells</option>
+              <option>Asian Paints</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Availability</label>
+            <select id="pfAvailability">
+              <option value="">All</option>
+              <option value="in-stock">In Stock</option>
+              <option value="low-stock">Low Stock</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="applyProductFilters()">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="products-showcase-grid" id="productsGrid"></div>
+  </section>
+
+</main>
+
+<!-- ===== GLOBAL TOAST ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== REORDER ALERT PANEL ===== -->
+<div class="panel-overlay" id="reorderPanel" style="display:none">
+  <div class="side-panel">
+    <div class="sp-header">
+      <h3>⚠ Smart Reorder Alerts</h3>
+      <button onclick="closePanel('reorderPanel')">✕</button>
+    </div>
+    <div id="reorderAlertsList" class="reorder-alerts"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
